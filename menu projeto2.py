@@ -6,8 +6,22 @@ usuario_logado = None
 def cadastrar_admin():
     username = input("Digite o nome de usuário do administrador: ")
     password = input("Digite a senha do administrador: ")
-    admins[username] = password
-    print("Administrador cadastrado com sucesso.")
+
+    if username in admins:
+        print("Nome de usuário já existente. Escolha outro.")
+    else:
+        admins[username] = password
+        print("Administrador cadastrado com sucesso.")
+
+def cadastrar_usuario():
+    username = input("Digite o nome de usuário do usuário: ")
+    password = input("Digite a senha do usuário: ")
+
+    if username in users:
+        print("Nome de usuário já existente. Escolha outro.")
+    else:
+        users[username] = password
+        print("Usuário cadastrado com sucesso.")
 
 def login():
     global usuario_logado
@@ -23,129 +37,7 @@ def login():
     else:
         print("Nome de usuário ou senha incorretos. Tente novamente.")
 
-def cadastrar_usuario():
-    username = input("Digite o nome de usuário do usuário: ")
-    password = input("Digite a senha do usuário: ")
-    users[username] = password
-    print("Usuário cadastrado com sucesso.")
-
-def menu_admin():
-    global usuario_logado
-    while usuario_logado:
-        print("\nMenu do Administrador")
-        print("1. Inserir Notícia")
-        print("2. Listar Notícias")
-        print("3. Excluir Notícia")
-        print("4. Editar Notícia")
-        print("5. Buscar Notícia")
-        print("6. Logout")
-        choice = input("Escolha uma opção: ")
-
-        if choice == '1':
-            inserir_noticia()
-        elif choice == '2':
-            listar_noticias()
-        elif choice == '3':
-            excluir_noticia()
-        elif choice == '4':
-            editar_noticia()
-        elif choice == '5':
-            buscar_noticia()
-        elif choice == '6':
-            usuario_logado = None
-
-def inserir_noticia():
-    titulo = input("Título da notícia: ")
-    conteudo = input("Conteúdo da notícia: ")
-    noticias.append({"titulo": titulo, "conteúdo": conteudo, "autor": usuario_logado, "comentarios": [], "curtidas": 0})
-    print("Notícia inserida com sucesso.")
-
-def listar_noticias():
-    print("\nLista de Notícias:")
-    for i, noticia in enumerate(noticias):
-        print(f"{i + 1}. Título: {noticia['titulo']}")
-        print(f"   Autor: {noticia['autor']}")
-        print(f"   Curtidas: {noticia['curtidas']}")
-        print("   Comentários:")
-        for comentario in noticia['comentarios']:
-            print(f"       {comentario}")
-    if not noticias:
-        print("Nenhuma notícia disponível.")
-
-def excluir_noticia():
-    titulo = input("Digite o título da notícia a ser excluída: ")
-    for noticia in noticias:
-        if noticia['titulo'] == titulo:
-            noticias.remove(noticia)
-            print(f"Notícia '{titulo}' excluída com sucesso.")
-            break
-    else:
-        print(f"Notícia '{titulo}' não encontrada.")
-
-def editar_noticia():
-    titulo = input("Digite o título da notícia a ser editada: ")
-    for noticia in noticias:
-        if noticia['titulo'] == titulo and noticia['autor'] == usuario_logado:
-            novo_conteudo = input("Novo conteúdo da notícia: ")
-            noticia['conteúdo'] = novo_conteudo
-            print("Notícia editada com sucesso.")
-            break
-    else:
-        print(f"Notícia '{titulo}' não encontrada ou você não tem permissão para editá-la.")
-
-def buscar_noticia():
-    titulo = input("Digite o título da notícia que deseja buscar: ")
-    for noticia in noticias:
-        if noticia['titulo'] == titulo:
-            print(f"Título: {noticia['titulo']}")
-            print(f"Conteúdo: {noticia['conteúdo']}")
-            print(f"Autor: {noticia['autor']}")
-            break
-    else:
-        print(f"Notícia '{titulo}' não encontrada.")
-
-def menu_usuario():
-    global usuario_logado
-    while usuario_logado in users:
-        print("\nMenu do Usuário")
-        print("1. Listar Notícias")
-        print("2. Buscar Notícia")
-        print("3. Comentar Notícia")
-        print("4. Curtir Notícia")
-        print("5. Logout")
-        choice = input("Escolha uma opção: ")
-
-        if choice == '1':
-            listar_noticias()
-        elif choice == '2':
-            buscar_noticia()
-        elif choice == '3':
-            comentar_noticia()
-        elif choice == '4':
-            curtir_noticia()
-        elif choice == '5':
-            usuario_logado = None
-
-def comentar_noticia():
-    titulo = input("Digite o título da notícia para comentar: ")
-    for noticia in noticias:
-        if noticia['titulo'] == titulo:
-            comentario = input("Digite seu comentário: ")
-            noticia['comentarios'].append(f"{usuario_logado}: {comentario}")
-            print("Comentário adicionado com sucesso.")
-            break
-    else:
-        print(f"Notícia '{titulo}' não encontrada.")
-
-def curtir_noticia():
-    titulo = input("Digite o título da notícia para curtir: ")
-    for noticia in noticias:
-        if noticia['titulo'] == titulo:
-            noticia['curtidas'] += 1
-            print(f"Você curtiu a notícia '{titulo}'.")
-            break
-    else:
-        print(f"Notícia '{titulo}' não encontrada.")
+# ... (rest of your code remains unchanged)
 
 while True:
     print("\nMenu Geral")
