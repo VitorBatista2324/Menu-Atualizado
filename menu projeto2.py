@@ -1,13 +1,25 @@
+from art import text2art
+
+banner_text = text2art("Notícias - PB")
+print(banner_text)
+
 noticias = []
 admins = {}
 users = {}
+users_info = {}
 usuario_logado = None
 
 def cadastrar_admin():
     username = input("Digite o nome de usuário do administrador: ")
+    if username in admins:
+        print("Nome de usuário já existe. Escolha outro.")
+        return
     password = input("Digite a senha do administrador: ")
+    verification_info = input("Digite sua informação pessoal adicional: ")
     admins[username] = password
+    users_info[username] = verification_info
     print("Administrador cadastrado com sucesso.")
+
 
 def login():
     global usuario_logado
@@ -15,18 +27,31 @@ def login():
     password = input("Senha: ")
 
     if username in admins and admins[username] == password:
-        print("Login bem-sucedido como administrador.")
-        usuario_logado = username
+        verification_info = input("Digite sua informação pessoal adicional: ")
+        if verification_info == users_info.get(username, None):
+            print("Login bem-sucedido como administrador.")
+            usuario_logado = username
+        else:
+            print("Informação pessoal incorreta. Tente novamente.")
     elif username in users and users[username] == password:
-        print("Login bem-sucedido como usuário.")
-        usuario_logado = username
+        verification_info = input("Digite sua informação pessoal adicional: ")
+        if verification_info == users_info[username]:
+            print("Login bem-sucedido como usuário.")
+            usuario_logado = username
+        else:
+            print("Informação pessoal incorreta. Tente novamente.")
     else:
         print("Nome de usuário ou senha incorretos. Tente novamente.")
 
+
 def cadastrar_usuario():
     username = input("Digite o nome de usuário do usuário: ")
+    if username in users or username in admins:
+        print("Nome de usuário já existe. Escolha outro.")
+        return
     password = input("Digite a senha do usuário: ")
     users[username] = password
+    users_info[username] = input("Digite sua informação pessoal adicional: ")
     print("Usuário cadastrado com sucesso.")
 
 def menu_admin():
@@ -152,6 +177,7 @@ while True:
     print("1. Cadastrar Administrador")
     print("2. Login")
     print("3. Cadastrar Usuário")
+    print("4. Cadastrar Notícia Anônima")
     print("0. Sair")
     choice = input("Escolha uma opção: ")
 
@@ -161,6 +187,8 @@ while True:
         login()
     elif choice == '3':
         cadastrar_usuario()
+    elif choice == '4':
+        inserir_noticia()
     elif choice == '0':
         break
     else:
@@ -170,3 +198,4 @@ while True:
         menu_admin()
     elif usuario_logado in users:
         menu_usuario()
+
