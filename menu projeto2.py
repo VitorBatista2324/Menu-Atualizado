@@ -1,4 +1,5 @@
 from art import text2art
+import json
 
 banner_text = text2art("Notícias - PB")
 print(banner_text)
@@ -64,6 +65,9 @@ def menu_admin():
         print("4. Editar Notícia")
         print("5. Buscar Notícia")
         print("6. Logout")
+        print("7. Exibir Notícias (Ordem Decrescente) do Editor Atual")
+        print("8. Exibir Todas as Notícias (Ordem Decrescente)")
+        print("9. Salvar Notícias do Editor Atual em Arquivo JSON")
         choice = input("Escolha uma opção: ")
 
         if choice == '1':
@@ -78,6 +82,12 @@ def menu_admin():
             buscar_noticia()
         elif choice == '6':
             usuario_logado = None
+        elif choice == '7':
+            exibir_noticias_ordem_curtidas(usuario_logado)
+        elif choice == '8':
+            exibir_noticias_ordem_curtidas()
+        elif choice == '9':
+            salvar_noticias_editor(usuario_logado)
 
 def inserir_noticia():
     titulo = input("Título da notícia: ")
@@ -172,6 +182,29 @@ def curtir_noticia():
     else:
         print(f"Notícia '{titulo}' não encontrada.")
 
+def exibir_noticias_ordem_curtidas(editor=None):
+
+    if editor:
+        noticias_editor = [noticia for noticia in noticias if noticia['autor'] == editor]
+        noticias_ord_curtidas = sorted(noticias_editor, key=lambda x: x['curtidas'], reverse=True)
+    else:
+        noticias_ord_curtidas = sorted(noticias, key=lambda x: x['curtidas'], reverse=True)
+
+    print("\nNotícias em Ordem Decrescente por Curtidas:")
+    for noticia in noticias_ord_curtidas:
+        print(f"Título: {noticia['titulo']}")
+        print(f"Autor: {noticia['autor']}")
+        print(f"Curtidas: {noticia['curtidas']}")
+        print("-----")
+
+def salvar_noticias_editor(editor):
+
+    noticias_editor = [noticia for noticia in noticias if noticia['autor'] == editor]
+    filename = f"{editor}_noticias.json"
+    with open(filename, 'w') as file:
+        json.dump(noticias_editor, file)
+    print(f"As notícias do editor {editor} foram salvas no arquivo {filename}.")
+
 while True:
     print("\nMenu Geral")
     print("1. Cadastrar Administrador")
@@ -198,4 +231,3 @@ while True:
         menu_admin()
     elif usuario_logado in users:
         menu_usuario()
-
